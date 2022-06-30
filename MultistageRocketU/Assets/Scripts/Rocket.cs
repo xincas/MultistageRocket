@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class Rocket : MonoBehaviour
@@ -9,9 +7,9 @@ public class Rocket : MonoBehaviour
     [SerializeField]
     private int numberOfStages = 1;
     [SerializeField]
-    private GameObject stagePrefab = null;
+    private GameObject stagePrefab;
     [SerializeField] 
-    private StageSettings stageSettings;
+    private List<StageSettings> stageSettings;
     
     private List<GameObject> stages = new List<GameObject>();
     
@@ -48,7 +46,8 @@ public class Rocket : MonoBehaviour
             lastTransform = nStage.transform;
             stages.Add(nStage);
         }
-
+        
+        //Capsule set to right place
         CapsuleCollider rocketCollider = transform.GetComponent<CapsuleCollider>();
         rocketCollider.center = new Vector3(0f,-numberOfStages * 0.5f, 0f);
         rocketCollider.height = numberOfStages + 1;
@@ -56,7 +55,8 @@ public class Rocket : MonoBehaviour
         //Center of mass
         //TODO make algorithm to calc center mass of the rocket
         Rigidbody rocketRigidbody = transform.GetComponent<Rigidbody>();
-        rocketRigidbody.centerOfMass = Vector3.Scale(rocketCollider.center, localScale);
+        rocketRigidbody.ResetCenterOfMass();
+        //rocketRigidbody.centerOfMass = Vector3.Scale(rocketCollider.center, localScale);
     }
 
     //Calc start position of rocket
@@ -76,8 +76,8 @@ public class Rocket : MonoBehaviour
     [Serializable]
     public struct StageSettings
     {
-        [SerializeField] private List<float> mass; 
-        [SerializeField] private List<float> fuelRatio;
-        [SerializeField] private List<float> velocityBurn;
+        [SerializeField] public float mass; 
+        [SerializeField] public float fuelRatio;
+        [SerializeField] public float velocityBurn;
     }
 }
