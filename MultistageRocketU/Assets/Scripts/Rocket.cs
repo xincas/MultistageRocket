@@ -18,6 +18,7 @@ public class Rocket : MonoBehaviour
     void Start()
     {
         InitStages();
+        InitPosition();
     }
 
     // Update is called once per frame
@@ -48,10 +49,14 @@ public class Rocket : MonoBehaviour
             stages.Add(nStage);
         }
 
-        CapsuleCollider collider = transform.GetComponent<CapsuleCollider>();
-        collider.center = new Vector3(0f,-numberOfStages * 0.5f, 0f);
-        collider.height = numberOfStages + 1;
+        CapsuleCollider rocketCollider = transform.GetComponent<CapsuleCollider>();
+        rocketCollider.center = new Vector3(0f,-numberOfStages * 0.5f, 0f);
+        rocketCollider.height = numberOfStages + 1;
     }
+    
+    
+    
+    
     
     [Serializable]
     public struct StageSettings
