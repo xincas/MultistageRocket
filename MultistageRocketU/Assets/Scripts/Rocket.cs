@@ -52,6 +52,11 @@ public class Rocket : MonoBehaviour
         CapsuleCollider rocketCollider = transform.GetComponent<CapsuleCollider>();
         rocketCollider.center = new Vector3(0f,-numberOfStages * 0.5f, 0f);
         rocketCollider.height = numberOfStages + 1;
+        
+        //Center of mass
+        //TODO make algorithm to calc center mass of the rocket
+        Rigidbody rocketRigidbody = transform.GetComponent<Rigidbody>();
+        rocketRigidbody.centerOfMass = Vector3.Scale(rocketCollider.center, localScale);
     }
     
     
