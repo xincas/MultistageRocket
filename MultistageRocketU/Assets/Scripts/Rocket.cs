@@ -27,7 +27,7 @@ public class Rocket : MonoBehaviour
         
     }
 
-    void InitStages()
+    private void InitStages()
     {
         if (stagePrefab is null)
             return;
@@ -57,6 +57,16 @@ public class Rocket : MonoBehaviour
         //TODO make algorithm to calc center mass of the rocket
         Rigidbody rocketRigidbody = transform.GetComponent<Rigidbody>();
         rocketRigidbody.centerOfMass = Vector3.Scale(rocketCollider.center, localScale);
+    }
+
+    //Calc start position of rocket
+    //TODO - calc position according to different height of each stages
+    private void InitPosition()
+    {
+        Transform t = transform;
+        Vector3 localScale = t.localScale;
+        float yPos = (t.childCount - 1) * (1f * localScale.y) + (localScale.y * 1f) / 2f;
+        t.position = new Vector3(0f, yPos, 0f);
     }
     
     
