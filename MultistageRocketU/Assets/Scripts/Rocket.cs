@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Rocket : MonoBehaviour
@@ -31,15 +32,17 @@ public class Rocket : MonoBehaviour
             return;
 
         Transform lastTransform = null;
+        Vector3 localScale = transform.localScale;
         
         for (int i = 0; i < numberOfStages; ++i)
         {
             if (lastTransform is null)
                 lastTransform = transform.Find("head").transform;
 
-            Vector3 pos = lastTransform.position - new Vector3(0f, 1f, 0);
+            Vector3 pos = lastTransform.position - new Vector3(0f, 1f * localScale.y, 0);
             
             GameObject nStage = Instantiate(stagePrefab, pos, lastTransform.rotation);
+            nStage.transform.localScale = localScale;
             nStage.transform.SetParent(transform);
             lastTransform = nStage.transform;
             stages.Add(nStage);
@@ -53,7 +56,8 @@ public class Rocket : MonoBehaviour
     [Serializable]
     public struct StageSettings
     {
-        [SerializeField] private float[] mass; 
-        [SerializeField] private float[] fuelRatio;
+        [SerializeField] private List<float> mass; 
+        [SerializeField] private List<float> fuelRatio;
+        [SerializeField] private List<float> velocityBurn;
     }
 }
