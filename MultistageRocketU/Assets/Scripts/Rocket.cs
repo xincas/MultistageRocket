@@ -74,10 +74,27 @@ public class Rocket : MonoBehaviour
     
     
     [Serializable]
-    public struct StageSettings
+    public class Stage
     {
+        [NonSerialized] public GameObject gameObject; 
         [SerializeField] public float mass; 
         [SerializeField] public float fuelRatio;
-        [SerializeField] public float velocityBurn;
+        [SerializeField] public float fuelСonsumption;
+        [SerializeField] public float fuelVelocity;
+
+        
+        public bool IsStageEmpty()
+        {
+            return fuelRatio <= 0f;
+        }
+
+        public void FuelBurn(float time)
+        {
+            float newMass = mass - fuelСonsumption * time;
+            float newFuelMass = mass * fuelRatio - fuelСonsumption * time;
+
+            mass = newMass;
+            fuelRatio = newFuelMass / newMass;
+        }
     }
 }
