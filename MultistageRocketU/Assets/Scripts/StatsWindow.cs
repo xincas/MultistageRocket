@@ -18,6 +18,8 @@ public class StatsWindow : MonoBehaviour
         {
             _inputFields.Add(obj.GetChild(i).GetChild(1).GetComponent<TMP_InputField>());
         }
+        
+        obj.gameObject.SetActive(false);
     }
 
     private void Update()

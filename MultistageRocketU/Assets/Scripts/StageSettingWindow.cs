@@ -11,7 +11,13 @@ public class StageSettingWindow : MonoBehaviour
     [SerializeField] private GameObject content;
     [SerializeField] private GameObject settingPrefab;
     [Space][SerializeField] private Rocket rocket;
-    
+
+    private void Start()
+    {
+        var t = transform.GetChild(0).GetChild(1);
+        t.gameObject.SetActive(false);
+    }
+
     public void AddSetting()
     {
         if (buttonsLayout == null) return;
