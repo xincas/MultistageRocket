@@ -4,19 +4,21 @@ using UnityEngine;
 
 public class Rocket : MonoBehaviour
 {
-    [SerializeField]
-    private int numberOfStages = 1;
-    [SerializeField]
-    private GameObject stagePrefab;
-    [SerializeField] 
-    private List<StageSettings> stageSettings;
-    
-    private List<GameObject> stages = new List<GameObject>();
-    
+    [SerializeField] private GameObject stagePrefab;
+    [Space] [SerializeField] private float massRocket;
+    [SerializeField] private List<Stage> stages;
+
+    [Space] [Space] [SerializeField] private Vector2 velocityVectorSize;
+    private float height;
+
+    private Rigidbody _rigidbody;
+    private ConstantForce _force;
+    private bool isLaunched = false;
     void Start()
     {
+        _rigidbody = transform.GetComponent<Rigidbody>();
+        _force = transform.GetComponent<ConstantForce>();
         InitStages();
-        InitPosition();
     }
 
     private void FixedUpdate()
@@ -84,7 +86,7 @@ public class Rocket : MonoBehaviour
         Transform lastTransform = null;
         Vector3 localScale = transform.localScale;
         
-        for (int i = 0; i < numberOfStages; ++i)
+        for (int i = 0; i < stages.Count; ++i)
         {
             if (lastTransform is null)
                 lastTransform = transform.Find("head").transform;
@@ -92,32 +94,39 @@ public class Rocket : MonoBehaviour
             Vector3 pos = lastTransform.position - new Vector3(0f, 1f * localScale.y, 0);
             
             GameObject nStage = Instantiate(stagePrefab, pos, lastTransform.rotation);
-            nStage.transform.localScale = localScale;
             nStage.transform.SetParent(transform);
+            nStage.transform.localScale = localScale;
             lastTransform = nStage.transform;
-            stages.Add(nStage);
+            stages[i].gameObject = nStage;
         }
         
-        //Capsule set to right place
-        CapsuleCollider rocketCollider = transform.GetComponent<CapsuleCollider>();
-        rocketCollider.center = new Vector3(0f,-numberOfStages * 0.5f, 0f);
-        rocketCollider.height = numberOfStages + 1;
-        
+        ColliderCentering(stages.Count);
+
         //Center of mass
         //TODO make algorithm to calc center mass of the rocket
-        Rigidbody rocketRigidbody = transform.GetComponent<Rigidbody>();
-        rocketRigidbody.ResetCenterOfMass();
+        _rigidbody.ResetCenterOfMass();
+        
+        //Calc mass of all rocket
+        float stagesMass = 0f;
+        foreach (var set in stages)
+        {
+            stagesMass += set.mass;
+        }
+        _rigidbody.mass = massRocket + stagesMass;
+
         //rocketRigidbody.centerOfMass = Vector3.Scale(rocketCollider.center, localScale);
     }
 
-    //Calc start position of rocket
-    //TODO - calc position according to different height of each stages
-    private void InitPosition()
+    private void ColliderCentering(int numberOfStages)
     {
-        Transform t = transform;
-        Vector3 localScale = t.localScale;
-        float yPos = (t.childCount - 1) * (1f * localScale.y) + (localScale.y * 1f) / 2f;
-        t.position = new Vector3(0f, yPos, 0f);
+        //Capsule set to right place
+        CapsuleCollider rocketCollider = transform.GetComponent<CapsuleCollider>();
+        rocketCollider.center = new Vector3(0f, -numberOfStages * 0.5f, 0f);
+        rocketCollider.height = numberOfStages + 1;
+
+        transform.position -= rocketCollider.bounds.min;
+    }
+
     }
     
     
