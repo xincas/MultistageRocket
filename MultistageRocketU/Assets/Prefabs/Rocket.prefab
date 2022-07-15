@@ -126,7 +126,6 @@ GameObject:
   - component: {fileID: 7511381317856213291}
   - component: {fileID: 7511381317856213288}
   - component: {fileID: 7511381317856213290}
-  - component: {fileID: 7511381317856213293}
   - component: {fileID: 7204485187284383778}
   m_Layer: 0
   m_Name: Rocket
@@ -190,21 +189,9 @@ ConstantForce:
   m_GameObject: {fileID: 7511381317856213286}
   m_Enabled: 1
   m_Force: {x: 0, y: 0, z: 0}
-  m_RelativeForce: {x: 0, y: 10, z: 0}
+  m_RelativeForce: {x: 0, y: 0, z: 0}
   m_Torque: {x: 0, y: 0, z: 0}
   m_RelativeTorque: {x: 0, y: 0, z: 0}
---- !u!114 &7511381317856213293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7511381317856213286}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72e870b54bf45ea4a8d62e671cadaafa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &7204485187284383778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -217,3 +204,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7fdeb4c560f661f4388b88af0f8346a6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stagePrefab: {fileID: 4996401305332880518, guid: cc32875b220931544b6d8c8bd9a556df, type: 3}
+  massRocket: 30000
+  stages:
+  - mass: 132000
+    fuelRatio: 0.8
+    "fuel\u0421onsumption": 6700
+    fuelVelocity: 5210
+  - mass: 500000
+    fuelRatio: 0.8
+    "fuel\u0421onsumption": 6700
+    fuelVelocity: 5210
+  - mass: 2300000
+    fuelRatio: 0.8
+    "fuel\u0421onsumption": 6700
+    fuelVelocity: 5210
+  velocityVectorSize: {x: -2, y: 2}
