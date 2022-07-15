@@ -16,17 +16,21 @@ public class Rocket : MonoBehaviour
 
     private Rigidbody _rigidbody;
     private ConstantForce _force;
-    private bool isLaunched = false;
+    private CapsuleCollider _collider;
+    private Transform _flameTransform;
+    private bool _isLaunched = false;
     void Start()
     {
         _rigidbody = transform.GetComponent<Rigidbody>();
         _force = transform.GetComponent<ConstantForce>();
+        _collider = transform.GetComponent<CapsuleCollider>();
+        _flameTransform = transform.Find("Flame");
         InitStages();
     }
 
     private void FixedUpdate()
     {
-        if (!isLaunched) return;
+        if (!_isLaunched) return;
 
         if (stages.Count > 0)
         {
@@ -44,6 +48,11 @@ public class Rocket : MonoBehaviour
                 {
                     Debug.LogWarning("Can't delete last stage");
                 }
+                
+                if (stages.Count != 0)
+                    _flameTransform.position = stages.Last().gameObject.transform.position + new Vector3(0f, -1.75f, 0f);
+                else 
+                    _flameTransform.gameObject.SetActive(false);
                 
                 ColliderCentering(stages.Count);
                 Undocking(stage);
@@ -118,16 +127,17 @@ public class Rocket : MonoBehaviour
         _rigidbody.mass = massRocket + stagesMass;
 
         //rocketRigidbody.centerOfMass = Vector3.Scale(rocketCollider.center, localScale);
+        _flameTransform.position = stages.Last().gameObject.transform.position + new Vector3(0f, -1.75f, 0f);
+        _flameTransform.gameObject.SetActive(false);
+        
+        transform.position -= _collider.bounds.min;
     }
 
     private void ColliderCentering(int numberOfStages)
     {
         //Capsule set to right place
-        CapsuleCollider rocketCollider = transform.GetComponent<CapsuleCollider>();
-        rocketCollider.center = new Vector3(0f, -numberOfStages * 0.5f, 0f);
-        rocketCollider.height = numberOfStages + 1;
-
-        transform.position -= rocketCollider.bounds.min;
+        _collider.center = new Vector3(0f, -numberOfStages * 0.5f, 0f);
+        _collider.height = numberOfStages + 1;
     }
 
     public float CurrentHeight()
@@ -147,14 +157,15 @@ public class Rocket : MonoBehaviour
 
     public void Launch()
     {
-        isLaunched = true;
+        _isLaunched = true;
+        _flameTransform.gameObject.SetActive(true);
     }
 
     public void ReSettingRocket(List<Stage> list, float usefulMass)
     {
         if (list.Count == 0) return;
         
-        isLaunched = false;
+        _isLaunched = false;
         DestroyAllStages();
 
         massRocket = usefulMass;
