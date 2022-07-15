@@ -52,6 +52,7 @@ public class StageSettingWindow : MonoBehaviour
             
             stages.Add(nStage);
         }
+        stages.Reverse();
 
         for (int i = 0; i < stages.Count; ++i)
         {
