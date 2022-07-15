@@ -19,12 +19,63 @@ public class Rocket : MonoBehaviour
         InitPosition();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void FixedUpdate()
     {
-        
+        if (!isLaunched) return;
+
+        if (stages.Count > 0)
+        {
+            Stage stage = stages.Last();
+            if (!stage.IsStageEmpty())
+            {
+                stage.FuelBurn(Time.fixedDeltaTime);
+                _rigidbody.mass -= stage.fuelСonsumption * Time.fixedDeltaTime;
+                _force.relativeForce = new Vector3(0f, stage.fuelСonsumption * stage.fuelVelocity, 0f);
+            }
+            else
+            {
+                _force.relativeForce = Vector3.zero;
+                if (!stages.Remove(stage))
+                {
+                    Debug.LogWarning("Can't delete last stage");
+                }
+                
+                ColliderCentering(stages.Count);
+                Undocking(stage);
+                _rigidbody.mass -= stage.mass;
+            }
+        }
+        else
+        {
+            _force.relativeForce = Vector3.zero;
+            Time.timeScale = 0f;
+            Debug.Log("Max speed: " + Vector3.Distance(Vector3.zero, _rigidbody.velocity) + "m/s");
+        }
+
+        Vector3 pos = transform.position;
+        if (pos.y >= 50_000f)
+        {
+            height += pos.y;
+            transform.position = new Vector3(pos.x, 1000f,pos.z);
+        }
     }
 
+    private void Undocking(Stage stage)
+    {
+        GameObject stGameObject = stage.gameObject;
+        Transform stTransform = stGameObject.transform;
+        
+        stTransform.SetParent(null);
+        
+        BoxCollider stCollider = stGameObject.GetComponent<BoxCollider>();
+        Rigidbody stRigidbody = stGameObject.GetComponent<Rigidbody>();
+
+        stCollider.enabled = true;
+        stRigidbody.mass = stage.mass;
+        stRigidbody.velocity = _rigidbody.velocity;
+        stRigidbody.isKinematic = false;
+    }
+    
     private void InitStages()
     {
         if (stagePrefab is null)
