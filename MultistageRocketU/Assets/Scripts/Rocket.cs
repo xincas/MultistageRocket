@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
+using util;
 
 public class Rocket : MonoBehaviour
 {
@@ -127,12 +130,51 @@ public class Rocket : MonoBehaviour
         transform.position -= rocketCollider.bounds.min;
     }
 
+    public float CurrentHeight()
+    {
+        return height + transform.position.y;
     }
     
-    
-    
-    
-    
+    public float CurrentFuel()
+    {
+        float mass = 0;
+        foreach (var st in stages)
+        {
+            mass += st.mass * st.fuelRatio;
+        }
+        return mass;
+    }
+
+    public void Launch()
+    {
+        isLaunched = true;
+    }
+
+    public void ReSettingRocket(List<Stage> list, float usefulMass)
+    {
+        if (list.Count == 0) return;
+        
+        isLaunched = false;
+        DestroyAllStages();
+
+        massRocket = usefulMass;
+        stages = list;
+
+        height = 0f;
+        _force.relativeForce = Vector3.zero;
+        _rigidbody.velocity = Vector3.zero;
+        
+        InitStages();
+    }
+
+    void DestroyAllStages()
+    {
+        foreach (var stage in stages)
+        {
+            Destroy(stage.gameObject);
+        }
+    }
+
     [Serializable]
     public class Stage
     {
