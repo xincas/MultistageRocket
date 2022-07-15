@@ -97,4 +97,25 @@ public class Rocket : MonoBehaviour
             fuelRatio = newFuelMass / newMass;
         }
     }
+    
+    #region Debug
+    
+    private void OnDrawGizmos()
+    {
+        if (_rigidbody != null)
+        {
+            //Center of mass
+            Gizmos.color = Color.red;
+            DrawCenterMass.ForGizmo(_rigidbody.worldCenterOfMass, 0.1f);
+        
+            //Vector of velocity
+            Gizmos.color = Color.black;
+            Vector3 worldCenterOfMass = _rigidbody.worldCenterOfMass;
+            Vector3 velocityDirection = _rigidbody.GetPointVelocity(worldCenterOfMass);
+            float distance = Vector3.Distance(worldCenterOfMass, velocityDirection + worldCenterOfMass);
+            DrawVector.ForGizmo(worldCenterOfMass, velocityDirection.normalized * Math.Clamp(distance, velocityVectorSize.x, velocityVectorSize.y));    
+        }
+    }
+    
+    #endregion
 }
