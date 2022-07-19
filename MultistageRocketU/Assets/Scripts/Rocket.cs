@@ -21,6 +21,7 @@ public class Rocket : MonoBehaviour
     private Transform _flameTransform;
     private Transform _headTransform;
     private bool _isLaunched = false;
+    private bool _isFirstTransition = true;
     private float _launchTime;
 
     private Logger _logger = new Logger();
@@ -74,8 +75,9 @@ public class Rocket : MonoBehaviour
         Vector3 pos = transform.position;
         if (pos.y >= 50_000f)
         {
-            height += pos.y;
+            height += pos.y - (_isFirstTransition ? 0f : 1000f);
             transform.position = new Vector3(pos.x, 1000f,pos.z);
+            _isFirstTransition = false;
         }
     }
 
@@ -93,6 +95,7 @@ public class Rocket : MonoBehaviour
         stRigidbody.mass = stage.mass;
         stRigidbody.velocity = _rigidbody.velocity;
         stRigidbody.isKinematic = false;
+        Destroy(stGameObject, 10f);
     }
     
     private void InitStages()
@@ -188,6 +191,7 @@ public class Rocket : MonoBehaviour
         StopCoroutine(nameof(Log));
         
         _isLaunched = false;
+        _isFirstTransition = true;
         DestroyAllStages();
 
         massRocket = usefulMass;
