@@ -192,7 +192,7 @@ public class Rocket : MonoBehaviour
         stages = list;
 
         height = 0f;
-        _force.relativeForce = Vector3.zero;
+        _force.force = Vector3.zero;
         _rigidbody.velocity = Vector3.zero;
         
         InitStages();
