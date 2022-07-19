@@ -21,6 +21,7 @@ public class Rocket : MonoBehaviour
     private Transform _flameTransform;
     private Transform _headTransform;
     private bool _isLaunched = false;
+    private float _launchTime;
 
     private Logger _logger = new Logger();
     void Start()
@@ -175,6 +176,7 @@ public class Rocket : MonoBehaviour
     public void Launch()
     {
         _isLaunched = true;
+        _launchTime = Time.time;
         _flameTransform.gameObject.SetActive(true);
 
         StartCoroutine(nameof(Log));
@@ -208,11 +210,11 @@ public class Rocket : MonoBehaviour
     
     IEnumerator Log()
     {
-        _logger.Log(_rigidbody.velocity.y, _rigidbody.mass, height);
+        _logger.Log(_rigidbody.velocity.y, _rigidbody.mass, CurrentHeight(), Time.time - _launchTime);
         while(true)
         {
             yield return new WaitForFixedUpdate();
-            _logger.LogAppend(_rigidbody.velocity.y, _rigidbody.mass, height);
+            _logger.LogAppend(_rigidbody.velocity.y, _rigidbody.mass, CurrentHeight(), Time.time - _launchTime);
         }
     }
 

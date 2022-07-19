@@ -4509,8 +4509,8 @@ MonoBehaviour:
   sensitivity: 4
   limit: 90
   zoomSensitivity: 0.3
-  zoomMin: 3
-  zoomMax: 10
+  zoomMin: 5
+  zoomMax: 50
 --- !u!1 &971969632
 GameObject:
   m_ObjectHideFlags: 0
